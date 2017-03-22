@@ -1,0 +1,16 @@
+[paths]
+source =
+   src/aws_buildspec
+   */site-packages/aws_buildspec
+
+[run]
+branch = true
+source =
+    aws_buildspec
+    tests
+parallel = true
+
+[report]
+show_missing = true
+precision = 2
+omit = *migrations*
