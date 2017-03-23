@@ -5,7 +5,6 @@ from pprint import pformat
 import os
 import tempfile
 
-
 test_dir = os.path.dirname(os.path.realpath(__file__))
 fixtures_path = os.path.join(test_dir, 'fixtures')
 # cassettes_path = os.path.join(fixtures_path, 'cassettes')
@@ -16,15 +15,17 @@ fixtures_path = os.path.join(test_dir, 'fixtures')
 def fixture(filename):
     return os.path.join(fixtures_path, filename)
 
-def _tempfile():
+def _tempfile(content=None):
     """ Create tempfile and return absolute path. """
     tf = tempfile.NamedTemporaryFile(delete=False)
+    if content is not None:
+        tf.write(str(content).encode('ascii'))
     tf.close()
     return tf.name
 
 class Tempfile(object):
-    def __init__(self):
-        self.tempfile = _tempfile()
+    def __init__(self, content=None):
+        self.tempfile = _tempfile(content)
     def __enter__(self):
         return self.tempfile
     def __exit__(self, type, value, traceback):
