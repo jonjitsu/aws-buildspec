@@ -1,0 +1,32 @@
+
+* buildspec cli
+
+#+BEGIN_SRC sh
+buildspec
+buildspec install
+buildspec build
+buildspec pre-build build
+buildspec init
+buildspec -f buildspec-test.yml
+buildspec -s /bin/bash build
+buildspec --image codebuild-nodejs build
+#+END_SRC
+
+
+buikdspec [option] [subcommand] [phases]
+
+Options:
+-f FILE           buildspec.yml file to use
+-s SHELL          shell to use (default: /bin/sh)
+-i, --image IMAGE run buildspec inside container
+                  default: run on system
+                  checks for the container locally first
+-v, --volume      volume mappings
+
+Phases: one of the predefined phases in the buildspec
+
+Subcommand:
+init              generate a buildspec.yml
+                  renames any conflicting one
+validate          validate the buildspec.yml
+

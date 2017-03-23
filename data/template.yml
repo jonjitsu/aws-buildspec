@@ -4,28 +4,21 @@ version: 0.1
 environment_variables:
   plaintext:
     key: "value"
-    key: "value"
-            
 phases:
   install:
     commands:
-      - command
-      - command
+      - echo install
   pre_build:
     commands:
-      - command
-      - command
+      - echo pre-build
   build:
     commands:
-      - command
-      - command
+      - echo build
   post_build:
     commands:
-      - command
-      - command
+      - echo post-build
 artifacts:
   files:
-    - location
     - location
   discard-paths: yes
   base-directory: location
