@@ -69,6 +69,7 @@ setup(
     ],
     install_requires=[
         'click',
+        'PyYAML'
     ],
     extras_require={
         # eg:
