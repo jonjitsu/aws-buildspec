@@ -22,5 +22,11 @@ def test_execute_line():
     res = execute_line('echo some text > /tmp/afile && cat /tmp/afile')
     assert res == [(STDOUT, 'some text\n')]
 
-    res = execute_line('mkdir /tmp/a/fdsa/asdf/asdfasdf/assdf 2>&1 > /tmp/afile && cat /tmp/afile')
+    res = execute_line('mkdir /tmp/a/fdsa/asdf/asdfasdf/assdf 2>&1 > /tmp/afile && cat /tmp/afile || true')
     assert res == [(STDOUT, 'mkdir: cannot create directory \xe2\x80\x98/tmp/a/fdsa/asdf/asdfasdf/assdf\xe2\x80\x99: No such file or directory\n')]
+
+def test_execute_line_raises_exception():
+    with pytest.raises(Exception):
+        execute_line('false')
+    with pytest.raises(Exception):
+        execute_line('ls -lat /aaslk/asdf/asdf/asd')

@@ -19,6 +19,22 @@ def stdstream(stream, type=STDOUT):
 def stdout(out): return stdstream(out, STDOUT)
 def stderr(err): return stdstream(err, STDERR)
 
+def format_results(results):
+    for line in results:
+        if line[0] == STDERR:
+            yield 'ERR: ' + line[1]
+        else:
+            yield 'OUT: ' + line[1]
+
+def join_lines(lines):
+    return '\n'.join(lines)
+
+import sys
+def print_results(results):
+    for line in format_results(results):
+        sys.stdout.write(line)
+    sys.stdout.flush()
+
 
 SHELL='/bin/sh'
 SHELL_CMD=[SHELL, '-c']
@@ -28,7 +44,11 @@ def execute_line(line):
     process = Popen(cmd, stdout=PIPE, stderr=PIPE)
     process.wait()
 
-    return stdout(process.stdout) + stderr(process.stderr)
+    output = stdout(process.stdout) + stderr(process.stderr)
+    if process.returncode != 0:
+        raise Exception(join_lines(format_results(output)))
+
+    return output
 
     # result = subprocess.call(SHELL_CMD + [line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # if result.returncode != 0:
@@ -42,15 +62,6 @@ def execute_line(line):
     #     output += stderr(result.stderr)
 
     # return output
-
-import sys
-def print_results(results):
-    for line in results:
-        if line[0] == STDERR:
-            sys.stdout.write('ERR: ' + line[1])
-        else:
-            sys.stdout.write('OUT: ' + line[1])
-    sys.stdout.flush()
 
 def execute_commands(lines):
     """"""
