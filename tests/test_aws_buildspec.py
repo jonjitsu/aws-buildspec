@@ -1,15 +1,6 @@
-from click.testing import CliRunner
 from .helpers import *
-from aws_buildspec.cli import main
-
-
-def test_main():
-    runner = CliRunner()
-    result = runner.invoke(main, [])
-
-    assert result.output == '()\n'
-    assert result.exit_code == 0
-
+import pytest
+import pprint
 from aws_buildspec import *
 
 def test_load_file():
@@ -20,3 +11,16 @@ def test_load_file():
     expected = {'version': 0.1, 'phases':{}}
     with Tempfile(content) as filename:
         assert load_file(filename) == expected
+
+def test_execute_line():
+    res = execute_line('echo hello world!')
+    assert res == [(STDOUT, 'hello world!\n')]
+
+    res = execute_line('echo first; echo second ; false && ls tests || echo failure')
+    assert res == [(STDOUT, 'first\n'), (STDOUT, 'second\n'), (STDOUT, 'failure\n')]
+
+    res = execute_line('echo some text > /tmp/afile && cat /tmp/afile')
+    assert res == [(STDOUT, 'some text\n')]
+
+    res = execute_line('mkdir /tmp/a/fdsa/asdf/asdfasdf/assdf 2>&1 > /tmp/afile && cat /tmp/afile')
+    assert res == [(STDOUT, 'mkdir: cannot create directory \xe2\x80\x98/tmp/a/fdsa/asdf/asdfasdf/assdf\xe2\x80\x99: No such file or directory\n')]

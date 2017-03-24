@@ -1,0 +1,13 @@
+---
+version: 0.1
+
+# environment_variables:
+phases:
+  build:
+    commands:
+      - echo build
+artifacts:
+  files:
+    - location
+  discard-paths: yes
+  base-directory: location

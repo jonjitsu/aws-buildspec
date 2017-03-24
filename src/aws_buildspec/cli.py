@@ -15,9 +15,25 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 import click
+from click import echo, UsageError
+from . import BUILDSPEC_YML
+import cmd
 
+# @click.command()
+@click.group()
+# @click.argument('names', nargs=-1)
+def main():
+    """"""
+    # click.echo(repr(names))
 
-@click.command()
-@click.argument('names', nargs=-1)
-def main(names):
-    click.echo(repr(names))
+@main.command()
+@click.option('-f', '--file', metavar='FILE', default=BUILDSPEC_YML)
+@click.argument('type', default='full')
+def init(type, file):
+    try:
+        cmd.init(type, file)
+    except IOError:
+        raise UsageError('Failed generating buildspec of type: ' + str(type))
+    else:
+        echo('Generated ' + file)
+
