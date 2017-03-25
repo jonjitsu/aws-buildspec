@@ -17,19 +17,33 @@ Why does this file exist, and why not put this in __main__?
 import click
 from click import echo, UsageError
 from . import BUILDSPEC_YML
-import cmd
+import aws_buildspec.cmd as cmd
 
 # @click.command()
 @click.group()
 # @click.argument('names', nargs=-1)
 def main():
-    """"""
+    """ Runs a buildspec.yml
+
+        Examples:
+        Runs all defined phases.
+        $ buildspec
+
+        Run specific phase(s)
+        $ buildspec build
+        $ buildspec install build
+
+        It's an error to specifically run an undefined phase.
+        $ buildspec install
+
+    """
     # click.echo(repr(names))
 
 @main.command()
 @click.option('-f', '--file', metavar='FILE', default=BUILDSPEC_YML)
 @click.argument('type', default='full')
 def init(type, file):
+    """ Creates a buildspec.yml """
     try:
         cmd.init(type, file)
     except IOError:

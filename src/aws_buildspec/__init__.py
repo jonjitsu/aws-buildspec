@@ -66,7 +66,42 @@ def execute_phases(phases, spec):
     - a list of phases
     - a buildspec
     Execute phases as per the spec.
-    """
-    for phase in phases:
-        execute_lines(spec['phases'][phase])
 
+    If a phase does not exist it is an error.
+    The order of phases is the order of execution.
+    """
+    results = []
+    for phase in phases:
+        if phase not in spec['phases']:
+            raise Exception('No phase[%s] defined!' % phase)
+        if 'commands' in spec['phases'][phase]:
+            results += execute_lines(spec['phases'][phase]['commands'])
+        else:
+            # log warning
+            pass
+    return results
+
+
+PHASE_ORDER = {'install':10, 'pre_build':20, 'build':30, 'post_build':40}
+def sort_phases(phases):
+    """ Sort phases in order defined in AWS buildspec reference """
+    sorter = lambda phase: PHASE_ORDER[phase]
+    return sorted(phases, key=sorter)
+
+def decide_phases(desired_phases, spec):
+    """ Given:
+        - a list of the desired phases to run
+        - the buildspec
+        Return a list of phases to run in the correct order.
+
+        ???Should a missing phase be an error or a warning???
+        Empty list for desired_phases means run all defined phases.
+    """
+    if 'phases' not in spec:
+        return []
+    if desired_phases:
+        raise NotImplemented('@TODO')
+    else:
+        phases = [phase for phase, commands in spec['phases'].items()]
+
+    return sort_phases(phases)

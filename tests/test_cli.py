@@ -3,6 +3,7 @@ from aws_buildspec.cli import main, init
 from .helpers import *
 import pytest
 import pprint
+import os
 
 def test_main():
     runner = CliRunner()
@@ -12,7 +13,9 @@ def test_main():
     assert result.exit_code == 0
 
 def test_init_command(tmpdir):
+    print(os.getcwd())
     tmpdir.chdir()
+    print(os.getcwd())
     runner = CliRunner()
     result = runner.invoke(main, ['init'])
     assert tmpdir.join('buildspec.yml').isfile()
