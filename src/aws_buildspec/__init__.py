@@ -3,6 +3,7 @@ __version__ = "0.1.0"
 from pprint import pprint
 import yaml
 from subprocess import Popen, PIPE
+from .compat import to_str
 
 BUILDSPEC_YML = 'buildspec.yml'
 
@@ -14,7 +15,7 @@ STDOUT=1
 STDERR=2
 # @TODO: deal with unicode
 def stdstream(stream, type=STDOUT):
-    return [(type, line) for line in stream]
+    return [(type, to_str(line)) for line in stream]
 
 def stdout(out): return stdstream(out, STDOUT)
 def stderr(err): return stdstream(err, STDERR)
@@ -36,12 +37,13 @@ def print_results(results):
     sys.stdout.flush()
 
 
+
 SHELL='/bin/sh'
 SHELL_CMD=[SHELL, '-c']
-def execute_line(line):
+def execute_line(line, shell=[]):
     """"""
-    cmd = SHELL_CMD + [line]
-    process = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    cmd = shell + [line]
+    process = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=not shell)
     process.wait()
 
     output = stdout(process.stdout) + stderr(process.stderr)
@@ -50,23 +52,13 @@ def execute_line(line):
 
     return output
 
-    # result = subprocess.call(SHELL_CMD + [line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # if result.returncode != 0:
-    #     pass
 
-    # result = subprocess.check_output(['/bin/sh', '-c', line], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    # if result.stdout:
-    #     output = stdout(result.stdout)
-    # if result.stderr:
-    #     output += stderr(result.stderr)
-
-    # return output
-
-def execute_commands(lines):
+def execute_lines(lines):
     """"""
+    results = []
     for line in lines:
-        execute_line(line)
+        results += execute_line(line)
+    return results
 
 def execute_phases(phases, spec):
     """
@@ -76,5 +68,5 @@ def execute_phases(phases, spec):
     Execute phases as per the spec.
     """
     for phase in phases:
-        execute_commands(spec['phases'][phase])
+        execute_lines(spec['phases'][phase])
 
