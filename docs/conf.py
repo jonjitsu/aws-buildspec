@@ -26,7 +26,7 @@ project = 'aws-buildspec'
 year = '2017'
 author = 'Jonathan Willis'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '0.1.0'
+version = release = '0.1.1'
 
 pygments_style = 'trac'
 templates_path = ['.']
