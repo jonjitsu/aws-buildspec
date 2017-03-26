@@ -5,13 +5,6 @@ import pytest
 import pprint
 import os
 
-def test_main():
-    runner = CliRunner()
-    result = runner.invoke(main, [])
-
-#     assert result.output == '()\n'
-    assert result.exit_code == 0
-
 def test_init_command(tmpdir):
     print(os.getcwd())
     tmpdir.chdir()
@@ -44,4 +37,11 @@ def test_init_command_with_alternate_filename(tmpdir):
     assert tmpdir.join('blah.yml').isfile()
     assert len(tmpdir.listdir()) == 1
     assert result.output == 'Generated blah.yml\n'
+    assert result.exit_code == 0
+
+def test_main():
+    runner = CliRunner()
+    result = runner.invoke(main, [])
+
+#     assert result.output == '()\n'
     assert result.exit_code == 0

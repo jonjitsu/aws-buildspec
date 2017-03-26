@@ -82,7 +82,15 @@ def test_decide_phases():
             },
             'build': {
                 'commands': ['echo build phase']
-            }
+            },
+            'pre_build': {}
         }
     }
-    # assert decide_phases([], spec) == ['install', 'build']
+    assert decide_phases([], spec) == ['install', 'pre_build', 'build']
+
+    assert decide_phases(['install'], spec) == ['install']
+    assert decide_phases(['build'], spec) == ['build']
+    assert decide_phases(['build', 'pre_build'], spec) == ['pre_build', 'build']
+    with pytest.raises(Exception):
+        decide_phases(['build', 'post_build'], spec)
+

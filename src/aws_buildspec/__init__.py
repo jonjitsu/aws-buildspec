@@ -100,8 +100,24 @@ def decide_phases(desired_phases, spec):
     if 'phases' not in spec:
         return []
     if desired_phases:
-        raise NotImplemented('@TODO')
+        phases = []
+        for phase in desired_phases:
+            if phase in spec['phases']:
+                phases.append(phase)
+            else:
+                raise Exception('Phase [%s] not defined' % phase)
     else:
         phases = [phase for phase, commands in spec['phases'].items()]
 
     return sort_phases(phases)
+
+def validate_phases(phases):
+    """ Given a list of phases throw exception if one is an invalid buildspec
+        phase.
+    """
+    for phase in phases:
+        if phase not in PHASE_ORDER:
+            raise Exception('Invalid buildspec phase: [%s]' % phase)
+
+def suggest_phase(phase):
+    """ Given an invalid phase, suggest the closest ones. (git style) """
