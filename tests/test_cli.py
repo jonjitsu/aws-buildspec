@@ -46,5 +46,32 @@ def test_main():
 #     assert result.output == '()\n'
     assert result.exit_code == 0
 
-def test_run():
+def test_run(tmpdir):
     """"""
+    buildspec_yml = """---
+    phases:
+      install:
+        commands:
+           - echo install
+      build:
+        commands:
+           - echo build
+      post_build:
+        commands:
+           - echo post_build
+    """
+    runner = CliRunner()
+    with Tempfile(buildspec_yml) as filename:
+        result = runner.invoke(main, ['run', '-f', filename, 'install'])
+        assert result.output == 'OUT: install\n'
+        assert result.exit_code == 0
+
+        result = runner.invoke(main, ['run', '-f', filename])
+        assert result.output == 'OUT: install\nOUT: build\nOUT: post_build\n'
+        assert result.exit_code == 0
+
+        result = runner.invoke(main, ['run', '-f', filename, 'post_build'])
+        assert result.output == 'OUT: post_build\n'
+        assert result.exit_code == 0
+
+

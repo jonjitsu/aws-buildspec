@@ -57,17 +57,18 @@ def init(type, file):
 
 
 @main.command()
+@click.option('-s', '--shell', metavar='SHELL', default=None)
 @click.option('-f', '--file', metavar='FILE', default=BUILDSPEC_YML,
               help='buildspec.yml file')
 @click.argument('phases', nargs=-1)
-def run(phases, file):
+def run(phases, file, shell):
     """ Run 1+ phases within the buildspec.yml """
     if not os.path.isfile(file):
         raise UsageError('%s does not exist.' % str(file))
 
     try:
         # echo(repr(phases))
-        results = cmd.run(phases, file)
+        results = cmd.run(phases, file, shell)
         print_results(results)
     except Exception as e:
         raise UsageError(str(e))

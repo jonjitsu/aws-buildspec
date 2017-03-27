@@ -1,4 +1,4 @@
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from pprint import pprint
 import yaml
@@ -53,14 +53,21 @@ def execute_line(line, shell=[]):
     return output
 
 
-def execute_lines(lines):
+def execute_lines(lines, shell=[]):
     """"""
     results = []
     for line in lines:
-        results += execute_line(line)
+        results += execute_line(line, shell)
     return results
 
-def execute_phases(phases, spec):
+def to_shell(shell):
+    """"""
+    if shell:
+        return shell.split(' ')
+    else:
+        return []
+
+def execute_phases(phases, spec, shell=None):
     """
     Given:
     - a list of phases
@@ -70,12 +77,13 @@ def execute_phases(phases, spec):
     If a phase does not exist it is an error.
     The order of phases is the order of execution.
     """
+    shell = to_shell(shell)
     results = []
     for phase in phases:
         if phase not in spec['phases']:
             raise Exception('No phase[%s] defined!' % phase)
         if 'commands' in spec['phases'][phase]:
-            results += execute_lines(spec['phases'][phase]['commands'])
+            results += execute_lines(spec['phases'][phase]['commands'], shell)
         else:
             # log warning
             pass

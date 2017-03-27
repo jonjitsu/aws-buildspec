@@ -13,10 +13,10 @@ def init(type='full', filename=BUILDSPEC_YML):
     with open(filename, 'w') as fp:
         fp.write(to_str(data))
 
-def run(phases, filename):
+def run(phases, filename=BUILDSPEC_YML, shell=None):
     """"""
     phases = list(phases)
     validate_phases(phases)
     spec = load_file(filename)
     phases = decide_phases(phases, spec)
-    return execute_phases(phases, spec)
+    return execute_phases(phases, spec, shell)
