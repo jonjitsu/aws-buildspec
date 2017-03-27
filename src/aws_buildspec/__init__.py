@@ -6,13 +6,32 @@ from subprocess import Popen, PIPE
 from .compat import to_str
 
 BUILDSPEC_YML = 'buildspec.yml'
+STDOUT=1
+STDERR=2
 
 def load_file(filename):
     with open(filename, 'r') as fp:
         return yaml.load(fp)
 
-STDOUT=1
-STDERR=2
+def join_lines(lines):
+    return '\n'.join(lines)
+
+import sys
+def print_results(results):
+    for line in format_results(results):
+        sys.stdout.write(line)
+    sys.stdout.flush()
+
+class BaseExecutor(object):
+    def execute_line(self, line):
+        raise NotImplemented('@TODO')
+    def execute_lines(self, lines):
+        results = []
+        for line in lines:
+            results += self.execute_line(line)
+        return results
+
+
 # @TODO: deal with unicode
 def stdstream(stream, type=STDOUT):
     return [(type, to_str(line)) for line in stream]
@@ -27,15 +46,6 @@ def format_results(results):
         else:
             yield 'OUT: ' + line[1]
 
-def join_lines(lines):
-    return '\n'.join(lines)
-
-import sys
-def print_results(results):
-    for line in format_results(results):
-        sys.stdout.write(line)
-    sys.stdout.flush()
-
 
 def to_shell(shell):
     """"""
@@ -44,7 +54,7 @@ def to_shell(shell):
     else:
         return []
 
-class SystemExecutor(object):
+class SystemExecutor(BaseExecutor):
     def __init__(self, shell=None):
         self.shell = to_shell(None)
         self.with_system_shell = not shell
@@ -63,15 +73,8 @@ class SystemExecutor(object):
 
         return output
 
-    def execute_lines(self, lines):
-        results = []
-        for line in lines:
-            results += self.execute_line(line)
-        return results
-
-
 import docker
-class DockerExecutor(object):
+class DockerExecutor(BaseExecutor):
     def __init__(self, image='ubuntu', shell=None):
         """"""
         self.image = image
@@ -85,12 +88,6 @@ class DockerExecutor(object):
         result = self.client.containers.run(self.image, \
                                             cmd)
         return [(STDOUT, to_str(result))]
-
-    def execute_lines(self, lines):
-        results = []
-        for line in lines:
-            results += self.execute_line(line)
-        return results
 
 def execute_phases(phases, spec, executor):
     """
