@@ -67,11 +67,7 @@ def run(phases, file):
 
     try:
         # echo(repr(phases))
-        phases = list(phases)
-        validate_phases(phases)
-        spec = load_file(file)
-        phases = decide_phases(phases, spec)
-        results = execute_phases(phases, spec)
+        results = cmd.run(phases, file)
         print_results(results)
     except Exception as e:
         raise UsageError(str(e))

@@ -45,3 +45,6 @@ def test_main():
 
 #     assert result.output == '()\n'
     assert result.exit_code == 0
+
+def test_run():
+    """"""
