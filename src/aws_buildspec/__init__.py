@@ -37,29 +37,6 @@ def print_results(results):
     sys.stdout.flush()
 
 
-
-SHELL='/bin/sh'
-SHELL_CMD=[SHELL, '-c']
-def execute_line(line, shell=[]):
-    """"""
-    cmd = shell + [line]
-    process = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=not shell)
-    process.wait()
-
-    output = stdout(process.stdout) + stderr(process.stderr)
-    if process.returncode != 0:
-        raise Exception(join_lines(format_results(output)))
-
-    return output
-
-
-def execute_lines(lines, shell=[]):
-    """"""
-    results = []
-    for line in lines:
-        results += execute_line(line, shell)
-    return results
-
 def to_shell(shell):
     """"""
     if shell:
@@ -67,7 +44,55 @@ def to_shell(shell):
     else:
         return []
 
-def execute_phases(phases, spec, shell=None):
+class SystemExecutor(object):
+    def __init__(self, shell=None):
+        self.shell = to_shell(None)
+        self.with_system_shell = not shell
+
+    def execute_line(self, line):
+        cmd = self.shell + [line]
+        process = Popen(cmd, \
+                        stdout=PIPE, \
+                        stderr=PIPE, \
+                        shell=self.with_system_shell)
+        process.wait()
+
+        output = stdout(process.stdout) + stderr(process.stderr)
+        if process.returncode != 0:
+            raise Exception(join_lines(format_results(output)))
+
+        return output
+
+    def execute_lines(self, lines):
+        results = []
+        for line in lines:
+            results += self.execute_line(line)
+        return results
+
+
+import docker
+class DockerExecutor(object):
+    def __init__(self, image='ubuntu', shell=None):
+        """"""
+        self.image = image
+        self.shell = shell if shell else '/bin/sh -c'
+        self.client = docker.from_env()
+
+
+    def execute_line(self, line):
+        """"""
+        cmd = self.shell + " '" + line + "'"
+        result = self.client.containers.run(self.image, \
+                                            cmd)
+        return [(STDOUT, to_str(result))]
+
+    def execute_lines(self, lines):
+        results = []
+        for line in lines:
+            results += self.execute_line(line)
+        return results
+
+def execute_phases(phases, spec, executor):
     """
     Given:
     - a list of phases
@@ -77,13 +102,12 @@ def execute_phases(phases, spec, shell=None):
     If a phase does not exist it is an error.
     The order of phases is the order of execution.
     """
-    shell = to_shell(shell)
     results = []
     for phase in phases:
         if phase not in spec['phases']:
             raise Exception('No phase[%s] defined!' % phase)
         if 'commands' in spec['phases'][phase]:
-            results += execute_lines(spec['phases'][phase]['commands'], shell)
+            results += executor.execute_lines(spec['phases'][phase]['commands'])
         else:
             # log warning
             pass

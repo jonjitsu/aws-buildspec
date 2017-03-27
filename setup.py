@@ -69,7 +69,8 @@ setup(
     ],
     install_requires=[
         'click',
-        'PyYAML'
+        'PyYAML',
+        'docker==2.1.0'
     ],
     extras_require={
         # eg:

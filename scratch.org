@@ -31,3 +31,10 @@ init              generate a buildspec.yml
 validate          validate the buildspec.yml
 
  
+** --image
+project_dir: the directory and subdirectories starting from CWD
+
+mount project_dir as /tmp/somerandomthing/src
+make word_dir /tmp/somerandomthing/src
+execute lines within the phases one at a time as:
+docker ...otheroptions... run --rm /bin/bash -c 'LINE'
