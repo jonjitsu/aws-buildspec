@@ -8,6 +8,7 @@ from .compat import to_str
 BUILDSPEC_YML = 'buildspec.yml'
 STDOUT=1
 STDERR=2
+BUILDSPEC=4
 
 def load_file(filename):
     with open(filename, 'r') as fp:
@@ -53,10 +54,13 @@ def stderr(err): return stdstream(err, STDERR)
 
 def format_results(results):
     for line in results:
+        output = line[1].rstrip()
         if line[0] == STDERR:
-            yield 'ERR: ' + line[1]
+            yield 'ERR: %s\n' % output
+        elif line[0] == STDOUT:
+            yield 'OUT: %s\n' % output
         else:
-            yield 'OUT: ' + line[1]
+            yield output + '\n'
 
 
 def to_shell(shell):
@@ -100,18 +104,16 @@ class DockerExecutor(BaseExecutor):
         self.client = docker.from_env()
         self.container = None
 
-    def get_container(self):
-        """"""
-        if not self.container:
-            self.container = self.client.containers.create(
-                self.image
-            )
-        return self.container
     def execute_line(self, line):
         """"""
         cmd = self.shell + " '" + line + "'"
-        container = self.get_container()
-        result = container.run(cmd)
+        result = self.client \
+                     .containers \
+                     .run(self.image,
+                          command=cmd,
+                          stdout=True,
+                          stderr=True,
+                          remove=True)
         return [(STDOUT, to_str(result))]
 
 def execute_phases(phases, spec, executor):
@@ -129,8 +131,10 @@ def execute_phases(phases, spec, executor):
         if phase not in spec['phases']:
             raise Exception('No phase[%s] defined!' % phase)
         if 'commands' in spec['phases'][phase]:
+            results.append((BUILDSPEC, 'Executing %s phase' % phase))
             results += executor.execute_lines(spec['phases'][phase]['commands'])
         else:
+            results.append((BUILDSPEC, 'No commands found for phase ' + phase))
             # log warning
             pass
     return results

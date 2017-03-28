@@ -53,9 +53,14 @@ def test_execute_phases():
         }
     }
     e = SystemExecutor()
-    assert execute_phases(['install'], spec, e) == [(STDOUT, 'install phase\n')]
-    assert execute_phases(['build'], spec, e) == [(STDOUT, 'build phase\n')]
-    assert execute_phases(['install', 'build'], spec, e) == [(STDOUT, 'install phase\n'), (STDOUT, 'build phase\n')]
+    assert execute_phases(['install'], spec, e) == [(BUILDSPEC, 'Executing install phase'), (STDOUT, 'install phase\n')]
+    assert execute_phases(['build'], spec, e) == [(BUILDSPEC, 'Executing build phase'), (STDOUT, 'build phase\n')]
+    assert execute_phases(['install', 'build'], spec, e) == [(BUILDSPEC, 'Executing install phase'),
+                                                             (STDOUT, 'install phase\n'),
+                                                             (BUILDSPEC, 'Executing build phase'),
+                                                             (STDOUT, 'build phase\n')]
+
+    [(STDOUT, 'install phase\n'), (STDOUT, 'build phase\n')]
 
     with pytest.raises(Exception):
         execute_phases(['install', 'build', 'nonexistant'], spec, e)
