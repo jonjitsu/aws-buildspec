@@ -22,6 +22,18 @@ def print_results(results):
         sys.stdout.write(line)
     sys.stdout.flush()
 
+# class Results(object):
+#     def __init__(self):
+#         self.results = []
+#     def add_output(self, line_or_it):
+#         if isinstance(line_or_it, str):
+#             self.results.append((STDOUT, line_or_it))
+#         else:
+#             self.results.extend(stdout(line_or_it))
+
+#     def __str__(self):
+#         return '@TODO'
+
 class BaseExecutor(object):
     def execute_line(self, line):
         raise NotImplemented('@TODO')
@@ -75,18 +87,31 @@ class SystemExecutor(BaseExecutor):
 
 import docker
 class DockerExecutor(BaseExecutor):
+    """
+    @TODO: Verify how exactly does codebuild run commands within the container.
+    Does it tear down for each line in the buildspec?
+    Can i overwrite the containers entrypoint?
+    Does codebuild pass everything through the cmd?
+    """
     def __init__(self, image='ubuntu', shell=None):
         """"""
         self.image = image
         self.shell = shell if shell else '/bin/sh -c'
         self.client = docker.from_env()
+        self.container = None
 
-
+    def get_container(self):
+        """"""
+        if not self.container:
+            self.container = self.client.containers.create(
+                self.image
+            )
+        return self.container
     def execute_line(self, line):
         """"""
         cmd = self.shell + " '" + line + "'"
-        result = self.client.containers.run(self.image, \
-                                            cmd)
+        container = self.get_container()
+        result = container.run(cmd)
         return [(STDOUT, to_str(result))]
 
 def execute_phases(phases, spec, executor):
