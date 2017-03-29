@@ -1,8 +1,8 @@
 import pkgutil
 import pkg_resources
 from pprint import pprint
-from . import BUILDSPEC_YML, load_file, execute_phases, decide_phases, \
-    print_results, validate_phases, SystemExecutor, DockerExecutor
+from . import BUILDSPEC_YML, load_file, decide_phases, validate_phases
+from .executors import SystemExecutor, DockerExecutor
 from .compat import to_str
 
 def init(type='full', filename=BUILDSPEC_YML):
@@ -23,4 +23,4 @@ def run(phases, filename=BUILDSPEC_YML, shell=None, docker_image=None):
     else:
         executor = SystemExecutor(shell)
 
-    return execute_phases(phases, spec, executor)
+    return executor.execute_phases(phases, spec)

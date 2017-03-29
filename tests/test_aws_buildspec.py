@@ -2,6 +2,7 @@ from .helpers import *
 import pytest
 import pprint
 from aws_buildspec import *
+from aws_buildspec.executors import *
 
 def test_load_file():
     content = """---
@@ -15,14 +16,15 @@ def test_load_file():
 def test_execute_line():
     e = SystemExecutor()
     res = e.execute_line('echo hello world!')
-    assert res == [(STDOUT, 'hello world!\n')]
+    assert str(res) == 'OUT: hello world!'
 
     res = e.execute_line('echo first; echo second ; false && ls tests || echo failure')
-    assert res == [(STDOUT, 'first\n'), (STDOUT, 'second\n'), (STDOUT, 'failure\n')]
+    expected = 'OUT: first\nOUT: second\nOUT: failure'
+    assert str(res) == expected
 
     with Tempfile() as filename:
         res = e.execute_line('echo some text > %s && cat %s' % (filename, filename))
-        assert res == [(STDOUT, 'some text\n')]
+        assert str(res) == 'OUT: some text'
 
     # with Tempfile() as filename:
     #     res = execute_line('mkdir /tmp/a/fdsa/asdf/asdfasdf/assdf 2>&1 > %s && cat %s || true' % (filename, filename))
@@ -39,7 +41,9 @@ def test_execute_lines():
     e = SystemExecutor()
     lines = ['echo hello world!',
              'echo first; echo second ; false && ls tests || echo failure']
-    assert e.execute_lines(lines) == [(STDOUT, 'hello world!\n'), (STDOUT, 'first\n'), (STDOUT, 'second\n'), (STDOUT, 'failure\n')]
+    actual = e.execute_lines(lines)
+    expected = 'OUT: hello world!\nOUT: first\nOUT: second\nOUT: failure'
+    assert str(actual) == expected
 
 def test_execute_phases():
     spec = {
@@ -53,17 +57,16 @@ def test_execute_phases():
         }
     }
     e = SystemExecutor()
-    assert execute_phases(['install'], spec, e) == [(BUILDSPEC, 'Executing install phase'), (STDOUT, 'install phase\n')]
-    assert execute_phases(['build'], spec, e) == [(BUILDSPEC, 'Executing build phase'), (STDOUT, 'build phase\n')]
-    assert execute_phases(['install', 'build'], spec, e) == [(BUILDSPEC, 'Executing install phase'),
+    assert e.execute_phases(['install'], spec).results == [(BUILDSPEC, 'Executing install phase'), (STDOUT, 'install phase\n')]
+    return
+    assert e.execute_phases(['build'], spec).results == [(BUILDSPEC, 'Executing build phase'), (STDOUT, 'build phase\n')]
+    assert e.execute_phases(['install', 'build'], spec).results == [(BUILDSPEC, 'Executing install phase'),
                                                              (STDOUT, 'install phase\n'),
                                                              (BUILDSPEC, 'Executing build phase'),
                                                              (STDOUT, 'build phase\n')]
 
-    [(STDOUT, 'install phase\n'), (STDOUT, 'build phase\n')]
-
     with pytest.raises(Exception):
-        execute_phases(['install', 'build', 'nonexistant'], spec, e)
+        e.execute_phases(['install', 'build', 'nonexistant'], spec)
 
 from random import shuffle
 def test_sort_phases():

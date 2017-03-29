@@ -16,8 +16,8 @@ Why does this file exist, and why not put this in __main__?
 """
 import click
 from click import echo, UsageError
-from . import BUILDSPEC_YML, load_file, execute_phases, decide_phases, \
-    print_results, validate_phases
+from . import BUILDSPEC_YML, load_file, decide_phases, \
+    validate_phases
 import aws_buildspec.cmd as cmd
 import os
 
@@ -70,6 +70,7 @@ def run(phases, file, shell, image):
     try:
         # echo(repr(phases))
         results = cmd.run(list(phases), file, shell, image)
-        print_results(results)
+        echo(str(results))
     except Exception as e:
-        raise UsageError(str(e))
+        raise e
+        # raise UsageError(str(e))

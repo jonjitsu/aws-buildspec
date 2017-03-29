@@ -63,15 +63,15 @@ def test_run(tmpdir):
     runner = CliRunner()
     with Tempfile(buildspec_yml) as filename:
         result = runner.invoke(main, ['run', '-f', filename, 'install'])
-        assert result.output == 'Executing install phase\nOUT: install\n'
         assert result.exit_code == 0
+        assert result.output == u'Executing install phase\nOUT: install\n'
 
         result = runner.invoke(main, ['run', '-f', filename])
-        assert result.output == 'Executing install phase\nOUT: install\nExecuting build phase\nOUT: build\nExecuting post_build phase\nOUT: post_build\n'
+        assert result.output == u'Executing install phase\nOUT: install\nExecuting build phase\nOUT: build\nExecuting post_build phase\nOUT: post_build\n'
         assert result.exit_code == 0
 
         result = runner.invoke(main, ['run', '-f', filename, 'post_build'])
-        assert result.output == 'Executing post_build phase\nOUT: post_build\n'
+        assert result.output == u'Executing post_build phase\nOUT: post_build\n'
         assert result.exit_code == 0
 
 
