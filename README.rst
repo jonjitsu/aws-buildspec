@@ -40,9 +40,9 @@ Overview
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/aws-buildspec
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/jonjitsu/python-aws-buildspec/v0.1.2.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/jonjitsu/python-aws-buildspec/v0.2.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/jonjitsu/python-aws-buildspec/compare/v0.1.2...master
+    :target: https://github.com/jonjitsu/python-aws-buildspec/compare/v0.2.0...master
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/aws-buildspec.svg
     :alt: PyPI Wheel

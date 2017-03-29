@@ -24,7 +24,7 @@ def read(*names, **kwargs):
 
 setup(
     name='aws-buildspec',
-    version='0.1.2',
+    version='0.2.0',
     license='BSD',
     description='A CodeBuild runner.',
     long_description='%s\n%s' % (

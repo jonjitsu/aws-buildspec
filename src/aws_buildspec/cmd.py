@@ -1,6 +1,4 @@
-import pkgutil
 import pkg_resources
-from pprint import pprint
 from . import BUILDSPEC_YML, load_file, decide_phases, validate_phases
 from .executors import SystemExecutor, DockerExecutor
 from .compat import to_str
