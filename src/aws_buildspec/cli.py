@@ -72,5 +72,5 @@ def run(phases, file, shell, image):
         results = cmd.run(list(phases), file, shell, image)
         echo(str(results))
     except Exception as e:
-        raise e
-        # raise UsageError(str(e))
+        # raise e
+        raise UsageError(str(e))

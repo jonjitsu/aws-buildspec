@@ -38,3 +38,13 @@ mount project_dir as /tmp/somerandomthing/src
 make word_dir /tmp/somerandomthing/src
 execute lines within the phases one at a time as:
 docker ...otheroptions... run --rm /bin/bash -c 'LINE'
+
+** codebuild run
+CodeBuild will create a temporary compute container of the class defined in the build project
+load it with the specified runtime environment
+download the source code
+execute the commands configured in the project
+upload the generated artifact to an S3 bucket
+and then destroy the compute container
+
+During the build, CodeBuild will stream the build output to the service console and Amazon CloudWatch Logs.
