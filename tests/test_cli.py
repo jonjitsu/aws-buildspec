@@ -47,7 +47,6 @@ def test_main():
     assert result.exit_code == 0
 
 def test_run(tmpdir):
-    """"""
     buildspec_yml = """---
     phases:
       install:
