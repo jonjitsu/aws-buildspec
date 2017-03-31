@@ -75,7 +75,7 @@ def unserialize(fixture):
 def assert_fixture(data, name):
     fixture = path_to_fixture(name)
     if os.path.isfile(fixture):
-        expected = eval(get_contents(fixture))
+        expected = unserialize(fixture)
         assert data == expected
     else:
         serialize(data, fixture)
