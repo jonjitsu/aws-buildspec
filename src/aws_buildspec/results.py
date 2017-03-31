@@ -5,10 +5,6 @@ STDOUT=1
 STDERR=2
 BUILDSPEC=4
 
-def format_results(results):
-    for line in results:
-        yield format_line(line)
-
 def format_line(line):
         output = line[1].rstrip()
         if line[0] == STDERR:
@@ -19,9 +15,10 @@ def format_line(line):
             return output
 
 class ResultLog(Sequence):
-    def __init__(self, stdout=[]):
+    def __init__(self, stdout=[], line_formatter=format_line):
         self.results = []
         self.add(stdout)
+        self.line_formatter = line_formatter
 
     def add_line(self, line, rtype=STDOUT):
         self.results.append((rtype, to_str(line)))
@@ -37,7 +34,7 @@ class ResultLog(Sequence):
                 self.add_line(line, rtype)
 
     def __getitem__(self, index):
-        return format_line(self.results[index])
+        return self.line_formatter(self.results[index])
 
     def __len__(self):
         return len(self.results)

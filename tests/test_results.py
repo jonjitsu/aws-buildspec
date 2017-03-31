@@ -65,3 +65,12 @@ def test_ResultLog_to_str():
     expected = 'OUT: line0\nOUT: line1\nOUT: line2\nOUT: line3\nOUT: line4'
     actual = str(results)
     assert actual == expected
+
+def test_ResultLog__line_formatter():
+    formatter = lambda l: '> ' + l[1]
+    sequence = ['line'+str(i) for i in range(5)]
+    results = ResultLog(sequence, formatter)
+
+    expected = '> line0\n> line1\n> line2\n> line3\n> line4'
+    actual = str(results)
+    assert actual == expected

@@ -9,10 +9,6 @@ def load_file(filename):
         return yaml.load(fp)
 
 import sys
-def print_results(results):
-    for line in format_results(results):
-        sys.stdout.write(line)
-    sys.stdout.flush()
 
 PHASE_ORDER = {'install':10, 'pre_build':20, 'build':30, 'post_build':40}
 def sort_phases(phases):
