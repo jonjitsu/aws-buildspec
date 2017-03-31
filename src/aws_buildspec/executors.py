@@ -137,46 +137,52 @@ class DockerExecutor(BaseExecutor):
 
         self.image = image
         self.shell = to_shell(shell) if shell else ['/bin/sh', '-c']
-        # @TODO: switch to just LowLevel APU
-        self.client = docker.from_env()
-        self.api_client = docker.APIClient()
-        self.container = None
+        self.container_id = None
+        cli = self.api = docker.APIClient()
         working_dir = '/tmp/src%d/src' % time()
-        docker_opts['working_dir'] = working_dir
-        docker_opts['environment'] = generate_environment_variables(working_dir)
-        docker_opts['volumes'] = volume(os.getcwd(), working_dir)
-        docker_opts['command'] = self.SLEEP_CMD % timeout
+        docker_opts = {
+            'working_dir': working_dir,
+            'environment': generate_environment_variables(working_dir),
+            'volumes': [working_dir],
+            'host_config': cli.create_host_config(
+                binds=[os.getcwd() + ':' + working_dir]
+            ),
+            'command': self.SLEEP_CMD % timeout,
+            'detach': True,
+        }
         self.docker_opts = docker_opts
 
     SLEEP_CMD = 'sleep %d'
-    def get_container(self):
-        if not self.container:
-            docker_opts = {
-                           'detach': True,
-                           'stdout': True,
-                           'stderr': True}
-            docker_opts.update(self.docker_opts)
-            self.container = self.client \
-                                 .containers \
-                                 .run(self.image, **docker_opts)
-        return self.container
+    def start_container(self):
+        if not self.container_id:
+            response = self.api.create_container(self.image, **self.docker_opts)
+            self.container_id = response[u'Id']
+            if response[u'Warnings']:
+                # @TODO: logging
+                pass
+            self.api.start(self.container_id)
+        return self.container_id
+
     def __del__(self):
-        if self.container:
-            self.container.kill()
-            self.container.remove()
+        if self.container_id:
+            cid = self.container_id
+            self.api.kill(cid)
+            self.api.remove_container(cid)
             # @TODO cleanup any volumes/networks
+            # is this safe?
+            # self.api.prune_volumes()
 
     def execute_line(self, line):
         """"""
         # @TODO proper quoting of line
         cmd = self.shell + [line]
-        container = self.get_container()
-        eid = self.api_client.exec_create(container.id, cmd)['Id']
-        output = self.api_client.exec_start(exec_id=eid)
-        response = self.api_client.exec_inspect(eid)
+        cid = self.start_container()
+        eid = self.api.exec_create(cid, cmd)['Id']
+        out = self.api.exec_start(exec_id=eid)
+        res = self.api.exec_inspect(eid)
 
-        results = ResultLog(output)
-        if response['ExitCode'] > 0:
+        results = ResultLog(out)
+        if res['ExitCode'] > 0:
             raise ExecutionError(results)
 
         return results
