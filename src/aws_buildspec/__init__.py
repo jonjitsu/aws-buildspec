@@ -4,17 +4,22 @@ import yaml
 
 BUILDSPEC_YML = 'buildspec.yml'
 
+
 def load_file(filename):
     with open(filename, 'r') as fp:
         return yaml.load(fp)
 
-import sys
 
-PHASE_ORDER = {'install':10, 'pre_build':20, 'build':30, 'post_build':40}
+PHASE_ORDER = {'install': 10, 'pre_build': 20, 'build': 30, 'post_build': 40}
+
+
 def sort_phases(phases):
     """ Sort phases in order defined in AWS buildspec reference """
-    sorter = lambda phase: PHASE_ORDER[phase]
+    def sorter(phase):
+        return PHASE_ORDER[phase]
+
     return sorted(phases, key=sorter)
+
 
 def decide_phases(desired_phases, spec):
     """ Given:
@@ -39,6 +44,7 @@ def decide_phases(desired_phases, spec):
 
     return sort_phases(phases)
 
+
 def validate_phases(phases):
     """ Given a list of phases throw exception if one is an invalid buildspec
         phase.
@@ -46,6 +52,7 @@ def validate_phases(phases):
     for phase in phases:
         if phase not in PHASE_ORDER:
             raise Exception('Invalid buildspec phase: [%s]' % phase)
+
 
 def suggest_phase(phase):
     """ Given an invalid phase, suggest the closest ones. (git style) """

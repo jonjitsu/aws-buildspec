@@ -1,9 +1,10 @@
 from collections import Sequence
 from .compat import to_str
 
-STDOUT=1
-STDERR=2
-BUILDSPEC=4
+STDOUT = 1
+STDERR = 2
+BUILDSPEC = 4
+
 
 def format_line(line):
         output = line[1].rstrip()
@@ -13,6 +14,7 @@ def format_line(line):
             return 'OUT: %s' % output
         else:
             return output
+
 
 class ResultLog(Sequence):
     def __init__(self, stdout=[], line_formatter=format_line):
@@ -50,8 +52,12 @@ class ResultLog(Sequence):
 def stdstream(stream, rtype=STDOUT):
     return [(rtype, to_str(line)) for line in stream]
 
+
 def stdout(out): return stdstream(out, STDOUT)
+
+
 def stderr(err): return stdstream(err, STDERR)
+
 
 def join_lines(lines):
     return '\n'.join(lines)

@@ -3,6 +3,7 @@ from . import BUILDSPEC_YML, load_file, decide_phases, validate_phases
 from .executors import SystemExecutor, DockerExecutor
 from .compat import to_str
 
+
 def init(type='full', filename=BUILDSPEC_YML):
     """"""
     # data = pkgutil.get_data('buildspec', 'data/template.yml')
@@ -10,6 +11,7 @@ def init(type='full', filename=BUILDSPEC_YML):
     data = pkg_resources.resource_string('aws_buildspec', template_name)
     with open(filename, 'w') as fp:
         fp.write(to_str(data))
+
 
 def run(phases, filename=BUILDSPEC_YML, shell=None, docker_image=None):
     """"""

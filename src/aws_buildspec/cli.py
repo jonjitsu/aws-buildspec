@@ -16,10 +16,10 @@ Why does this file exist, and why not put this in __main__?
 """
 import click
 from click import echo, UsageError
-from . import BUILDSPEC_YML, load_file, decide_phases, \
-    validate_phases
+from . import BUILDSPEC_YML
 import aws_buildspec.cmd as cmd
 import os
+
 
 # @click.command()
 @click.group()
@@ -41,6 +41,7 @@ def main():
         @TODO make run subcommand the default command
     """
     # click.echo(repr(phases))
+
 
 @main.command()
 @click.option('-f', '--file', metavar='FILE', default=BUILDSPEC_YML,
