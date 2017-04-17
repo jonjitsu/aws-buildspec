@@ -1,4 +1,5 @@
 from .results import ResultLog, STDOUT, STDERR, BUILDSPEC
+from .compat import to_str
 
 class ExecutionError(Exception):
     pass
@@ -181,7 +182,7 @@ class DockerExecutor(BaseExecutor):
         out = self.api.exec_start(exec_id=eid)
         res = self.api.exec_inspect(eid)
 
-        results = ResultLog(out)
+        results = ResultLog(to_str(out))
         if res['ExitCode'] > 0:
             raise ExecutionError(results)
 

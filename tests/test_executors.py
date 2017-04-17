@@ -1,4 +1,4 @@
-from helpers import *
+from .helpers import *
 from aws_buildspec.executors import *
 import os, re
 def test_generate_environment_variables_has_defaults():
