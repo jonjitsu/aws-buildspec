@@ -3,6 +3,7 @@ import pytest
 import pprint
 from aws_buildspec import *
 from aws_buildspec.executors import *
+from aws_buildspec.results import STDOUT, STDERR
 
 def test_load_file():
     content = """---

@@ -17,7 +17,7 @@ import sys
 
 def to_str(something):
     if sys.version_info[:1] == (2,):
-        if isinstance(something, unicode):
+        if isinstance(something, unicode): # noqa
             return something.encode('utf-8')
         else:
             return something
