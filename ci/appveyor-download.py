@@ -95,7 +95,7 @@ def unpack_zipfile(filename):
 parser = argparse.ArgumentParser(description='Download artifacts from AppVeyor.')
 parser.add_argument('--id',
                     metavar='PROJECT_ID',
-                    default='jonjitsu/python-aws-buildspec',
+                    default='jonjitsu/aws-buildspec',
                     help='Project ID in AppVeyor.')
 parser.add_argument('build',
                     nargs='?',

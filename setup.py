@@ -33,7 +33,7 @@ setup(
     ),
     author='Jonathan Willis',
     author_email='secret',
-    url='https://github.com/jonjitsu/python-aws-buildspec',
+    url='https://github.com/jonjitsu/aws-buildspec',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],

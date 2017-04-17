@@ -31,8 +31,8 @@ version = release = '0.2.0'
 pygments_style = 'trac'
 templates_path = ['.']
 extlinks = {
-    'issue': ('https://github.com/jonjitsu/python-aws-buildspec/issues/%s', '#'),
-    'pr': ('https://github.com/jonjitsu/python-aws-buildspec/pull/%s', 'PR #'),
+    'issue': ('https://github.com/jonjitsu/aws-buildspec/issues/%s', '#'),
+    'pr': ('https://github.com/jonjitsu/aws-buildspec/pull/%s', 'PR #'),
 }
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
