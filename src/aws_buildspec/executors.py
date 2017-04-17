@@ -1,10 +1,14 @@
-import docker
 import os
-from subprocess import Popen, PIPE
+from subprocess import PIPE
+from subprocess import Popen
 from time import time
 
-from .results import ResultLog, STDERR, BUILDSPEC
+import docker
+
 from .compat import to_str
+from .results import BUILDSPEC
+from .results import STDERR
+from .results import ResultLog
 
 HOUR = 60*60
 

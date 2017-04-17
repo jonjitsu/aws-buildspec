@@ -1,6 +1,11 @@
-from .helpers import *
+import os
+import re
+
 from aws_buildspec.executors import *
-import os, re
+
+from .helpers import *
+
+
 def test_generate_environment_variables_has_defaults():
     defaults = {'CODEBUILD_BUILD_ARN': 'arn:aws:codebuild:region-ID:account-ID:build/codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE',
            'CODEBUILD_BUILD_ID': 'codebuild-demo-project:b1e6661e-e4f2-4156-9ab9-82a19EXAMPLE',

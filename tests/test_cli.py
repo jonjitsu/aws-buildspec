@@ -1,9 +1,14 @@
-from click.testing import CliRunner
-from aws_buildspec.cli import main, init
-from .helpers import *
-import pytest
-import pprint
 import os
+import pprint
+
+import pytest
+from click.testing import CliRunner
+
+from aws_buildspec.cli import init
+from aws_buildspec.cli import main
+
+from .helpers import *
+
 
 def test_init_command(tmpdir):
     print(os.getcwd())
@@ -72,5 +77,3 @@ def test_run(tmpdir):
         result = runner.invoke(main, ['run', '-f', filename, 'post_build'])
         assert result.output == u'Executing post_build phase\nOUT: post_build\n'
         assert result.exit_code == 0
-
-

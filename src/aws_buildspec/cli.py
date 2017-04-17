@@ -14,11 +14,15 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
-import click
-from click import echo, UsageError
-from . import BUILDSPEC_YML
-import aws_buildspec.cmd as cmd
 import os
+
+import click
+from click import UsageError
+from click import echo
+
+import aws_buildspec.cmd as cmd
+
+from . import BUILDSPEC_YML
 
 
 # @click.command()

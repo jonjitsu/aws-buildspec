@@ -1,9 +1,11 @@
-from aws_buildspec.results import *
-from .helpers import *
-import pytest
-import pprint
 import os
+import pprint
 
+import pytest
+
+from aws_buildspec.results import *
+
+from .helpers import *
 
 
 def test_ResultLog_is_iterable():

@@ -1,9 +1,8 @@
 import json
-import os
-from pprint import pformat
 # import vcr
 import os
 import tempfile
+from pprint import pformat
 
 test_dir = os.path.dirname(os.path.realpath(__file__))
 fixtures_path = os.path.join(test_dir, 'fixtures')

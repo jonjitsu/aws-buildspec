@@ -1,4 +1,5 @@
 from collections import Sequence
+
 from .compat import to_str
 
 STDOUT = 1

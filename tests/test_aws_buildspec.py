@@ -1,9 +1,15 @@
-from .helpers import *
-import pytest
 import pprint
+from random import shuffle
+
+import pytest
+
 from aws_buildspec import *
 from aws_buildspec.executors import *
-from aws_buildspec.results import STDOUT, STDERR
+from aws_buildspec.results import STDERR
+from aws_buildspec.results import STDOUT
+
+from .helpers import *
+
 
 def test_load_file():
     content = """---
@@ -69,7 +75,6 @@ def test_execute_phases():
     with pytest.raises(Exception):
         e.execute_phases(['install', 'build', 'nonexistant'], spec)
 
-from random import shuffle
 def test_sort_phases():
     assert sort_phases([]) == []
     assert sort_phases(['install']) == ['install']
@@ -106,4 +111,3 @@ def test_decide_phases():
     assert decide_phases(['build', 'pre_build'], spec) == ['pre_build', 'build']
     with pytest.raises(Exception):
         decide_phases(['build', 'post_build'], spec)
-

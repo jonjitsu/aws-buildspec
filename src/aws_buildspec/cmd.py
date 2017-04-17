@@ -1,7 +1,12 @@
 import pkg_resources
-from . import BUILDSPEC_YML, load_file, decide_phases, validate_phases
-from .executors import SystemExecutor, DockerExecutor
+
+from . import BUILDSPEC_YML
+from . import decide_phases
+from . import load_file
+from . import validate_phases
 from .compat import to_str
+from .executors import DockerExecutor
+from .executors import SystemExecutor
 
 
 def init(type='full', filename=BUILDSPEC_YML):
